@@ -19,6 +19,6 @@ playroomtv.conf
 html5_push_registrations.conf
 google_calendars.yaml
 
-*.db
+*.db*
 OZW_Log.txt
 home-assistant.log
