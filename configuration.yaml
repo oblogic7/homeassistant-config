@@ -264,11 +264,11 @@ mqtt:
 light: 
   - platform: flux_led
     devices:
-      10.7.7.21:
+      10.7.8.18:
         name: Office LED
-      10.7.7.19:
+      10.7.8.20:
         name: Pantry LED
-      10.7.7.36:
+    	10.7.8.23:
         name: Playroom Lamp
   - platform: mqtt
     name: "Umbrella LED"
