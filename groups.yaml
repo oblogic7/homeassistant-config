@@ -1,0 +1,226 @@
+default_view:
+  view: yes
+  icon: mdi:home
+  entities:
+    - group.lights
+    - group.locks
+    - group.exterior_entrances
+    - group.fans
+    - group.gates
+
+cameras:
+  view: yes
+  icon: mdi:cctv
+  entities:
+    - camera.front_door_live
+    - camera.back_door_live
+    - camera.side_entry_live
+
+media_players:
+  view: yes
+  icon: mdi:television
+  entities:
+    - media_player.playroom_tv
+    - media_player.office_tv
+    - media_player.living_room_tv
+
+christmas_lights:
+  view: yes
+  icon: mdi:pine-tree
+  entities:
+    - group.christmas_lights_inside
+    - group.christmas_lights_outside
+
+christmas_lights_inside:
+  icon: mdi:pine-tree-box
+  name: Inside Lights
+  entities:
+    - switch.christmas_tree
+    - switch.mantle_garland_lights
+    - switch.built_in_left
+    - switch.built_in_right
+    - switch.fireplace_trees
+
+christmas_lights_outside:
+  icon: mdi:pine-tree
+  name: Outside Lights
+  entities:
+    - light.backyard_tree_led
+         
+presence:
+  view: yes
+  icon: mdi:account-location
+  entities:
+    - group.location
+    - group.bed
+
+battery_levels:
+  view: yes
+  icon: mdi:battery
+  entities:
+    - sensor.front_door_sensor_battery
+    - sensor.front_door_deadbolt_battery
+    - sensor.back_door_sensor_battery
+    - sensor.back_door_deadbolt_battery
+    - sensor.side_door_sensor_battery
+    - sensor.side_door_deadbolt_battery
+    - sensor.garage_door_sensor_battery
+    - sensor.garage_door_deadbolt_battery
+    - sensor.kitchen_leak_sensor_battery
+    - sensor.master_bath_leak_sensor_battery
+    - sensor.north_gate_sensor_battery
+    - sensor.south_gate_sensor_battery
+
+settings:
+  view: yes
+  icon: mdi:settings
+  entities:
+    - group.mode_toggles
+    - group.flags
+    - group.bedtime_options
+
+bedtime_options:
+  name: Bedtimes
+  control: hidden
+  entities: 
+    - input_datetime.option_girls_weekday_bedtime
+    - input_datetime.option_girls_weekend_bedtime
+
+flags:
+  name: Master Bedroom Settings
+  control: hidden
+  entities:
+    - input_boolean.flag_fan_on_when_bed_occupied
+    - input_boolean.flag_fan_on_at_bedtime
+    - input_select.option_fan_speed_at_bedtime
+mode_toggles:
+  icon: mdi:switch
+  name: House Modes
+  control: hidden
+  entities:
+    - input_boolean.away_mode
+    - input_boolean.guest_mode
+    - input_boolean.sleep_mode
+    - input_boolean.extended_away_mode
+
+location:
+  icon: mdi:map-marker
+  name: Locations
+  entities:
+    - device_tracker.matt_iphone
+    - device_tracker.alydia_iphone
+
+bed:
+  icon: mdi:hotel
+  name: Bed Occupancy
+  entities: 
+    - sensor.bed_matt
+    - sensor.bed_alydia
+    - sensor.bed_both
+
+exterior_entrances:
+  icon: mdi:door
+  name: Exterior Entrances
+  entities:
+    - sensor.back_door_state
+    - sensor.front_door_state
+    - sensor.side_door_state
+
+exterior_locks:
+  icon: mdi:lock
+  name: Exterior Door Locks
+  entities:
+    - lock.front_door
+    - lock.back_door
+    - lock.side_entry
+
+gates:
+  icon: mdi:gate
+  name: Gates
+  entities:
+    - sensor.south_gate_state
+    - sensor.north_gate_state
+
+porch_lights:
+  name: Porch Lights
+  entities:
+    - switch.side_entry_porch_light
+    - switch.front_porch_light
+    - switch.garage_outside_light
+
+all_lights:
+  name: All Lights
+  entities:
+    - light.umbrella_led
+    - light.playroom_lamp
+    - light.kitchen_can_lights
+    - light.living_room_chandelier
+    - light.livingroom_can_lights
+    - light.office_led
+    - light.office_light
+    - light.pantry_led
+    - switch.kitchen_pendant_lights
+    - switch.master_bedroom_light
+    - switch.playroom_can_lights
+    - switch.playroom_fan_light
+    - switch.stair_light
+ 
+lights:
+  icon: mdi:light
+  name: Lights
+  control: hidden
+  entities:
+    - light.umbrella_led
+    - light.playroom_lamp
+    - light.kitchen_can_lights
+    - light.living_room_chandelier
+    - light.livingroom_can_lights
+    - light.office_led
+    - light.office_light
+    - light.pantry_led
+    - switch.back_porch_light
+    - switch.front_porch_light
+    - switch.garage_outside_light
+    - switch.kitchen_pendant_lights
+    - switch.master_bedroom_light
+    - switch.playroom_can_lights
+    - switch.playroom_fan_light
+    - switch.side_entry_porch_light
+    - switch.stair_light
+
+lights_night_off:
+  icon: mdi:light
+  name: Lights
+  control: hidden
+  entities:
+    - light.kitchen_can_lights
+    - light.living_room_chandelier
+    - light.livingroom_can_lights
+    - light.office_led
+    - light.office_light
+    - light.pantry_led
+    - switch.back_porch_light
+    - switch.front_porch_light
+    - switch.garage_outside_light
+    - switch.kitchen_pendant_lights
+    - switch.master_bedroom_light
+    - switch.playroom_can_lights
+    - switch.playroom_fan_light
+    - switch.side_entry_porch_light
+
+fans:
+  icon: mdi:fan
+  name: Fans
+  control: hidden
+  entities:
+    - fan.playroom_fan_level
+    - fan.master_bedroom_fan_level
+    - switch.office_fan
+locks:
+  icon: mdi:lock
+  name: Locks
+  entities:
+    - lock.back_door
+    - lock.side_entry
+    - lock.garage_entry
+    - lock.front_door

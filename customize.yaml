@@ -1,0 +1,7 @@
+media_player.lg_webos_smart_tv:
+  friendly_name: Playroom TV
+sensor.backdoor_sensor_access_control:
+  friendly_name: Back Door Sensor Access Control
+input_boolean.alexa_alydia_location: {}
+zone.home:
+  track_ios: 'false'

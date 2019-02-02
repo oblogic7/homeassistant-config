@@ -1,0 +1,24 @@
+# Ignore folders.
+.storage
+.cloud
+.google.token
+.ios.conf
+.uuid
+.HA_VERSION
+.google.token
+.homekit.state
+
+# Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
+ip_bans.yaml
+secrets.yaml
+known_devices.yaml
+ecobee.conf
+livingroomtv.conf
+officetv.conf
+playroomtv.conf
+html5_push_registrations.conf
+google_calendars.yaml
+
+*.db
+OZW_Log.txt
+home-assistant.log

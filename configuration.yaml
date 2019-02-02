@@ -1,0 +1,584 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  #
+  latitude: !secret latitude
+  longitude: !secret longitude
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 125
+  # metric for Metric, imperial for Imperial
+  unit_system: imperial
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: America/Chicago
+  # Customization file
+  customize: !include customize.yaml
+
+# Show links to resources in log and frontend
+#introduction:
+
+# Enables the frontend
+frontend:
+
+# Enables configuration UI
+config:
+
+http:
+  # Secrets are defined in the file secrets.yaml
+  api_password: !secret http_password
+  # Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+  # base_url: example.duckdns.org:8123
+
+  #enable_debug:
+
+# Checks for available updates
+# Note: This component will send some information about your system to
+# the developers to assist with development of Home Assistant.
+# For more information, please see:
+#
+updater:
+  # Optional, allows Home Assistant developers to focus on popular components.
+  # include_used_components: true
+
+# Discover some devices automatically
+#discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+#conversation:
+
+media_extractor:
+
+# Enables support for tracking state changes over time
+history:
+  include:
+    domains:
+      - light
+      - switch
+    entities:
+      - binary_sensor.kitchen_motion
+
+# View all events in a logbook
+#logbook:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+wake_on_lan:
+
+recorder:
+
+google:
+  client_id: !secret gcal_client_id
+  client_secret: !secret gcal_secret
+
+
+# Weather prediction
+sensor:
+  - platform: time_date
+    display_options:
+      - 'time'
+  - platform: yr
+  - platform: systemmonitor
+    resources:
+      - type: disk_use_percent
+        arg: /
+      - type: memory_use_percent
+      - type: load_1m
+      - type: load_5m
+      - type: load_15m
+  - platform: template
+    sensors:
+      hvac_upstairs_operation:
+        friendly_name: "Upstairs HVAC Operation"
+        value_template: "{{ ['idle', 'cool', 'heat', 'fan'].index(state_attr('climate.upstairs', 'operation')) }}"
+      hvac_upstairs_fan:
+        friendly_name: "Upstairs HVAC Fan"
+        value_template: "{{ ['off', 'on'].index(state_attr('climate.upstairs', 'fan')) }}"
+      hvac_upstairs_aux_heat:
+        friendly_name: "Upstairs HVAC Aux Heat"
+        value_template: "{{ ['off', 'on'].index(state_attr('climate.upstairs', 'aux_heat')) }}"
+      hvac_laundry_operation:
+        friendly_name: "Laundry HVAC Operation"
+        value_template: "{{ ['idle', 'cool', 'heat', 'fan'].index(state_attr('climate.laundry', 'operation')) }}"
+      hvac_laundry_fan:
+        friendly_name: "Laundry HVAC Fan"
+        value_template: "{{ ['off', 'on'].index(state_attr('climate.laundry', 'fan')) }}"
+      hvac_laundry_aux_heat:
+        friendly_name: "Laundry HVAC Aux Heat"
+        value_template: "{{ ['off', 'on'].index(state_attr('climate.laundry', 'aux_heat')) }}"
+      hvac_master_operation:
+        friendly_name: "Master HVAC Operation"
+        value_template: "{{ ['idle', 'cool', 'heat', 'fan'].index(state_attr('climate.master', 'operation')) }}"
+      hvac_master_fan:
+        friendly_name: "Master HVAC Fan"
+        value_template: "{{ ['off', 'on'].index(state_attr('climate.master', 'fan')) }}"
+      hvac_master_aux_heat:
+        friendly_name: "Master HVAC Aux Heat"
+        value_template: "{{ ['off', 'on'].index(state_attr('climate.master', 'aux_heat')) }}"
+      bed_matt:
+        friendly_name: "Bed - Matt"
+        value_template: "{% if states.sensor.bed_matt_value.state|int > 120 %}Occupied{% else %}Unoccupied{% endif %}"
+        icon_template: "{% if states.sensor.bed_matt_value.state|int > 120 %}mdi:hotel{% else %}mdi:bed-empty{% endif %}"
+      bed_alydia:
+        friendly_name: "Bed - Alydia"
+        value_template: "{% if states.sensor.bed_alydia_value.state|int > 200 %}Occupied{% else %}Unoccupied{% endif %}"
+        icon_template: "{% if states.sensor.bed_alydia_value.state|int > 200 %}mdi:hotel{% else %}mdi:bed-empty{% endif %}"
+      bed_both:
+        friendly_name: "Bed - Both"
+        value_template: "{% if states.sensor.bed_alydia.state == 'Occupied' and states.sensor.bed_matt.state == 'Occupied' %}Occupied{% else %}Unoccupied{% endif %}"
+      bed_either:
+        friendly_name: "Bed - Either"
+        value_template: "{% if states.sensor.bed_alydia.state == 'Occupied' or states.sensor.bed_matt.state == 'Occupied' %}Occupied{% else %}Unoccupied{% endif %}"
+      back_door_state:
+        friendly_name: "Back Door"
+        value_template: "{% if is_state('sensor.backdoor_sensor_access_control', '23') %}Closed{% else %}Open{% endif %}"
+        icon_template: "{% if is_state('sensor.backdoor_sensor_access_control', '23') %}mdi:door-closed{% else %}mdi:door-open{% endif %}"
+      back_door_sensor_battery:
+        friendly_name: "Back Door Sensor Battery"
+        value_template: "{{ states.zwave.backdoor_sensor.attributes.battery_level }}"
+      back_door_deadbolt_battery:
+        friendly_name: "Back Door Deadbolt Battery"
+        value_template: "{{ states.zwave.back_door_deadbolt.attributes.battery_level }}"
+         
+      front_door_state:
+        friendly_name: "Front Door"
+        value_template: "{% if is_state('sensor.frontdoor_sensor_access_control', '23') %}Closed{% else %}Open{% endif %}"
+        icon_template: "{% if is_state('sensor.frontdoor_sensor_access_control', '23') %}mdi:door-closed{% else %}mdi:door-open{% endif %}"       
+      front_door_sensor_battery:
+        friendly_name: "Front Door Sensor Battery"
+        value_template: "{{ states.zwave.frontdoor_sensor.attributes.battery_level }}"
+      front_door_deadbolt_battery:
+        friendly_name: "Front Door Deadbolt Battery"
+        value_template: "{{ states.zwave.front_door_deadbolt.attributes.battery_level }}"
+
+      side_door_state:
+        friendly_name: "Side Door"
+        value_template: "{% if is_state('sensor.sidedoor_sensor_access_control', '23') %}Closed{% else %}Open{% endif %}"
+        icon_template: "{% if is_state('sensor.sidedoor_sensor_access_control', '23') %}mdi:door-closed{% else %}mdi:door-open{% endif %}"       
+      side_door_sensor_battery:
+        friendly_name: "Side Door Sensor Battery"
+        value_template: "{{ states.zwave.sidedoor_sensor.attributes.battery_level }}"
+      side_door_deadbolt_battery:
+        friendly_name: "Side Door Deadbolt Battery"
+        value_template: "{{ states.zwave.side_entry_deadbolt.attributes.battery_level }}"
+
+      garage_door_deadbolt_battery:
+        friendly_name: "Garage Door Deadbolt Battery"
+        value_template: "{{ states.zwave.garage_entry_deadbolt.attributes.battery_level }}"
+
+      kitchen_leak_sensor_battery:
+        friendly_name: "Kitchen Leak Sensor Battery"
+        value_template: "{{ states.zwave.kitchen_leak_sensor.attributes.battery_level }}"
+
+      master_bath_leak_sensor_battery:
+        friendly_name: "Master Bath Leak Sensor Battery"
+        value_template: "{{ states.zwave.master_bath_leak_sensor.attributes.battery_level }}"
+        
+
+      north_gate_state:
+        friendly_name: "North Gate"
+        value_template: "{% if is_state('sensor.north_gate_access_control', '23') %}Closed{% else %}Open{% endif %}"
+        icon_template: "{% if is_state('sensor.north_gate_access_control', '23') %}mdi:gate{% else %}mdi:exclamation{% endif %}"       
+      north_gate_sensor_battery:
+        friendly_name: "North Gate Sensor Battery"
+        value_template: "{{ states.zwave.north_gate.attributes.battery_level }}"
+
+      south_gate_state:
+        friendly_name: "South Gate"
+        value_template: "{% if is_state('sensor.south_gate_access_control', '23') %}Closed{% else %}Open{% endif %}"
+        icon_template: "{% if is_state('sensor.south_gate_access_control', '23') %}mdi:gate{% else %}mdi:exclamation{% endif %}"       
+      south_gate_sensor_battery:
+        friendly_name: "South Gate Sensor Battery"
+        value_template: "{{ states.zwave.south_gate.attributes.battery_level }}"
+
+  - platform: mqtt
+    state_topic: 'sensor/bed/matt'
+    name: 'bed_matt_value'
+  - platform: mqtt
+    state_topic: 'sensor/bed/alydia'
+    name: 'bed_alydia_value'
+  - platform: mqtt
+    state_topic: 'led/tree/currentPattern'
+    name: 'backyard_tree_current_pattern'
+
+binary_sensor:
+#  - platform: rpi_gpio
+#    invert_logic: true
+#    ports:
+#      7: Smoke Detectors 
+  - platform: mqtt
+    state_topic: "sensor/motion/pantry"
+    name: Pantry Motion
+    device_class: occupancy
+    payload_on: "On"
+    payload_off: "Off"
+
+# Text to speech
+tts:
+  - platform: google
+
+# Cloud
+cloud:
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
+ecobee:
+  api_key: !secret ecobee_api_key
+
+zwave:
+  usb_path: /dev/ttyACM0
+  network_key: !secret zwave_network_key
+  polling_interval: 3000
+  device_config_glob:
+    binary_sensor.*gate*:
+      polling_intensity: 5
+      refresh_value: true
+      delay: 30
+    switch.*:
+      polling_intensity: 1
+      refresh_value: true
+      delay: 2
+    light.*:
+      polling_intensity: 1
+      refresh_value: true
+      delay: 2
+    fan.*:
+      polling_intensity: 1
+      refresh_value: true
+      delay: 2
+
+mqtt:
+  broker: !secret mqtt_host
+#  certificate: !secret mqtt_ssl_cert_path
+  port: 1883
+  client_id: hass_master
+  keepalive: 60
+  username: !secret mqtt_user
+  password: !secret mqtt_pass
+
+light: 
+  - platform: flux_led
+    devices:
+      10.7.7.21:
+        name: Office LED
+      10.7.7.19:
+        name: Pantry LED
+      10.7.7.36:
+        name: Playroom Lamp
+  - platform: mqtt
+    name: "Umbrella LED"
+    command_topic: "led/umbrella"
+    brightness_command_topic: "leg/umbrella"
+    rgb_command_topic: "led/umbrella"
+    payload_on: "power:1"
+    payload_off: "power:0"
+    rgb_command_template: "rgb({{red}},{{green}},{{blue}})"
+  - platform: mqtt
+    name: Backyard Tree LED
+    command_topic: "led/tree/power"
+    brightness_command_topic: "led/tree/brightness"
+    rgb_command_topic: "led/tree/rgb"
+    availablility_topic: "led/tree/status"
+    payload_available: "online"
+    payload_not_available: "offline"
+    state_topic: "led/tree/state"
+    payload_on: "1"
+    payload_off: "0"
+    rgb_command_template: "{{green}},{{red}},{{blue}}"
+switch:
+  - platform: broadlink
+    host: 10.7.7.44
+    mac: '78:0f:77:5a:d7:09'
+    friendly_name: Master Bedroom RM Mini
+    type: rm_mini
+
+ios:
+  push:
+    categories:
+      - name: Clear Door Timer
+        identifier: 'clear_door_timer'
+        actions:
+          - identifier: 'CLEAR_TIMER'
+            title: 'Clear Door Timer'
+            activationMode: 'background'
+            authenticationRequired: yes
+            behavior: 'default'
+      - name: Smoke Alarm
+        identifier: 'alarm_smoke'
+        actions:
+          - identifier: 'CALL_FD'
+            title: 'Call Fire Dept'
+            activationMode: 'background'
+            authenticationRequired: yes
+            behavior: 'default'
+      - name: Alarm
+        identifier: 'alarm'
+        actions:
+          - identifier: 'SOUND_ALARM'
+            title: 'Sound Alarm'
+            activationMode: 'background'
+            authenticationRequired: yes
+            destructive: yes
+            behavior: 'default'
+          - identifier: 'SILENCE_ALARM'
+            title: 'Silence Alarm'
+            activationMode: 'background'
+            authenticationRequired: yes
+            destructive: no
+            behavior: 'textInput'
+            textInputButtonTitle: 'Silencio!'
+            textInputPlaceholder: 'Placeholder'
+                   
+device_tracker:
+  - platform: owntracks
+    max_gps_accuracy: 200
+
+    #  - platform: unifi
+    #host: 192.168.1.9
+    #username: !secret unifi_user
+    #password: !secret unifi_pass
+    #verify_ssl: false
+    #ssid_filter:
+    #  - '7'
+
+homekit:
+  auto_start: False
+  filter:
+    include_domains:
+      - light
+      - switch
+      - media_player
+
+weblink:
+  entities:
+    - name: Node Red
+      url: http://10.7.7.6:1880
+
+input_select:
+  option_fan_speed_at_bedtime:
+    name: Fan speed @ bedtime
+    options:
+      - high
+      - medium
+      - low
+
+input_number:
+  option_backyard_tree_single_pixel:
+    name: Backyard Tree Single Pixel
+    min: 0
+    max: 1000
+    step: 1
+input_datetime:
+  option_girls_weekday_bedtime:
+    name: Girl's Bedtime - Weekday
+    has_date: false
+    has_time: true
+  option_girls_weekend_bedtime:
+    name: Girl's Bedtime - Weekend
+    has_date: false
+    has_time: true
+
+input_boolean:
+  flag_fan_on_at_bedtime:
+    name: Turn fan on at bedtime
+    icon: mdi:fan
+  flag_fan_on_when_bed_occupied:
+    name: Turn on fan when bed occupied
+    icon: mdi:fan
+  sound_machine:
+    name: Sound Machine
+    initial: off
+    icon: mdi:speaker
+  guest_mode:
+    name: Guest Mode
+    initial: off
+    icon: mdi:account-group
+  away_mode:
+    name: Away Mode
+    initial: off
+    icon: mdi:map-marker-off
+  extended_away_mode:
+    name: Extended Away (Vacation)
+    initial: off
+    icon: mdi:beach
+  sleep_mode:
+    name: Sleep Mode
+    initial: off
+    icon: mdi:sleep
+
+  option_backyard_tree_rotate_pattern:
+    name: Pattern Rotation
+    icon: mdi:rotate-3d
+  alexa_alydia_location:
+    name: Alexa Handler - Alydia Location
+    initial: off
+    icon: mdi:location
+  alexa_goodnight:
+    name: Alexa Handler - Goodnight
+    initial: off
+    icon: mdi:moon
+
+  alexa_show_front_door_office_tv:
+    name: Alexa Handler - Show Front Door on Office TV
+    initial: off
+    icon: mdi:camera-metering-matrix
+  alexa_show_side_entry_office_tv:
+    name: Alexa Handler - Show Side Entry on Office TV
+    initial: off
+    icon: mdi:camera-metering-matrix
+  alexa_show_back_door_office_tv:
+    name: Alexa Handler - Show Back Door on Office TV
+    initial: off
+    icon: mdi:camera-metering-matrix
+  alexa_show_girls_room_office_tv:
+    name: Alexa Handler - Show Girls Room on Office TV
+    initial: off
+    icon: mdi:camera-metering-matrix
+
+  alexa_show_front_door_playroom_tv:
+    name: Alexa Handler - Show Front Door on Playroom TV
+    initial: off
+    icon: mdi:camera-metering-matrix
+  alexa_show_side_entry_playroom_tv:
+    name: Alexa Handler - Show Side Entry on Playroom TV
+    initial: off
+    icon: mdi:camera-metering-matrix
+  alexa_show_back_door_playroom_tv:
+    name: Alexa Handler - Show Back Door on Playroom TV
+    initial: off
+    icon: mdi:camera-metering-matrix
+  alexa_show_girls_room_playroom_tv:
+    name: Alexa Handler - Show Girls Room on Playroom TV
+    initial: off
+    icon: mdi:camera-metering-matrix
+
+  alexa_show_front_door_living_room_tv:
+    name: Alexa Handler - Show Front Door on Living Room TV
+    initial: off
+    icon: mdi:camera-metering-matrix
+  alexa_show_side_entry_living_room_tv:
+    name: Alexa Handler - Show Side Entry on Living Room TV
+    initial: off
+    icon: mdi:camera-metering-matrix
+  alexa_show_back_door_living_room_tv:
+    name: Alexa Handler - Show Back Door on Living Room TV
+    initial: off
+    icon: mdi:camera-metering-matrix
+  alexa_show_girls_room_living_room_tv:
+    name: Alexa Handler - Show Girls Room on Living Room TV
+    initial: off
+    icon: mdi:camera-metering-matrix
+
+
+
+doorbird:
+  token: 82j9480edj0293ji99ea0sv9uh
+  devices:
+    - host: 10.7.7.7
+      username: !secret db1_user
+      password: !secret db1_pass
+      name: Side Entry
+      monitored_conditions:
+        - doorbell
+        - motion
+        - relay
+    - host: 10.7.7.9
+      username: !secret db2_user
+      password: !secret db2_pass
+      name: Front Door
+      monitored_conditions:
+        - doorbell
+        - motion
+        - relay
+    - host: 10.7.7.10
+      username: !secret db3_user
+      password: !secret db3_pass
+      name: Back Door
+      monitored_conditions:
+        - doorbell
+        - motion
+        - relay
+tuya:
+  username: !secret tuya_user
+  password: !secret tuya_pass
+  country_code: 1
+
+camera:
+  - platform: doorbird
+  - platform: mjpeg
+    mjpeg_url: http://10.7.8.109/stream.jpg
+    name: Girl's Room
+    username: !secret girls_room_camera_user
+    password: !secret girls_room_camera_pass
+    authentication: basic
+
+notify:
+  - name: Browser Push
+    platform: html5
+    gcm_api_key: !secret gapps_server_key
+    gcm_sender_id: !secret gapps_sender_id
+  - platform: command_line
+    name: 'Master Bedroom'
+    command: "/config/ha-alexa-tts/alexa_wrapper.sh -d 'Master Bedroom'"
+  - platform: command_line
+    name: 'Office'
+    command: "/config/ha-alexa-tts/alexa_wrapper.sh -d \"Matt's Office\""
+  - platform: command_line
+    name: 'Girls Room'
+    command: "/config/ha-alexa-tts/alexa_wrapper.sh -d \"Girl's Room\""
+  - platform: command_line
+    name: 'Playroom'
+    command: "/config/ha-alexa-tts/alexa_wrapper.sh -d 'Playroom'"
+  - platform: command_line
+    name: 'Kitchen'
+    command: "/config/ha-alexa-tts/alexa_wrapper.sh -d 'Kitchen'"
+  - platform: command_line
+    name: 'Master Bathroom'
+    command: "/config/ha-alexa-tts/alexa_wrapper.sh -d 'Master Bathroom'"    
+  - platform: command_line
+    name: 'All Rooms'
+    command: "/config/ha-alexa-tts/alexa_wrapper.sh -d 'Everywhere'"
+
+  - platform: webostv
+    host: 10.7.7.50
+    name: Playroom TV
+    filename: playroomtv.conf
+  - platform: webostv
+    host: 10.7.7.48
+    name: Office TV
+    filename: officetv.conf
+  - platform: webostv
+    host: 10.7.7.52
+    name: Living Room TV
+    filename: livingroomtv.conf
+
+media_player:
+  - platform: webostv
+    name: Playroom TV
+    host: 10.7.7.50
+    filename: playroomtv.conf
+    turn_on_action:
+      service: wake_on_lan.send_magic_packet
+      data:
+        mac: '78:5d:c8:50:78:76'
+  - platform: webostv
+    name: Office TV
+    host: 10.7.7.48
+    filename: officetv.conf
+    turn_on_action:
+      service: wake_on_lan.send_magic_packet
+      data:
+        mac: '78:5d:c8:02:d4:24'
+  - platform: webostv
+    name: Living Room TV
+    host: 10.7.7.52
+    filename: livingroomtv.conf
+    turn_on_action:
+      service: wake_on_lan.send_magic_packet
+      data:
+        mac: 'a8:23:fe:0c:24:4a'

@@ -1,0 +1,15 @@
+master_tv_off:
+  sequence:
+    - service: switch.broadlink_send_packet_10_7_7_44
+      data:
+        packet:
+          - 'JgCMAJWRFDUVNRQ1FBEUEBUQFBEUEBQ1FTQVNRQRFBAVEBQRFBAUERQ1FBEUEBQRFBAVEBQQFTUUEBU1FDUUNRQ1FDYTNRUABhSVkhQ1FDUUNhQQFBEUEBUQFBAVNRQ1FDUVEBQRFBAUERQQFRAUNRUQFBAVEBUQFBEUEBQ1FRAUNRQ1FDUVNBU1EzYUAA0FAAAAAAAAAAAAAAAA'
+
+
+pantry_light_white:
+  sequence:
+    - service: light.turn_on
+      data:
+        entity_id: light.pantry_led
+        rgb_color: [255, 255, 255]
+        brightness: 3
