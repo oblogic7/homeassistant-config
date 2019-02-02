@@ -292,7 +292,7 @@ light:
     rgb_command_template: "{{green}},{{red}},{{blue}}"
 switch:
   - platform: broadlink
-    host: 10.7.7.44
+    host: 10.7.8.9
     mac: '78:0f:77:5a:d7:09'
     friendly_name: Master Bedroom RM Mini
     type: rm_mini
